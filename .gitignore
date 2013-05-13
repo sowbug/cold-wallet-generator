@@ -1,1 +1,5 @@
+*.log
+*.aux
+*-pics.pdf
 .DS_Store
+*~
