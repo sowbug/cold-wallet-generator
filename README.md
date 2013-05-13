@@ -25,4 +25,4 @@ gen_cold_wallet > /tmp/keys.tex`
 FAQ
 ===
 
-* **What's this about secure deletion?** On OSX, you want `srm -u file_I_never_want_to_see_again`. On Linux, it's `shred file_I_never_want_to_see_again`. I don't know how to do it on Windows.
+* **What's this about secure deletion?** On OSX, you want `srm file_I_never_want_to_see_again`. On Linux, it's `shred -u file_I_never_want_to_see_again`. I don't know how to do it on Windows.
