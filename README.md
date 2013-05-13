@@ -14,13 +14,15 @@ Usage
 6. Put that piece of paper somewhere safe.
 7. Use your addresses as you wish.
 
-Sample
+Notes
 ======
 
 While developing this script, I used [keyfmt](https://github.com/bkkcoins/misc/blob/master/keyfmt/keyfmt) and piped its output straight to the wallet generator:
 
 `$ { for i in {1..20} ; do hexdump -v -e '/1 "%02X"' -n 32 /dev/urandom | keyfmt "%a:%w" ; done } |
 gen_cold_wallet > /tmp/keys.tex`
+
+On Linux, you probably want to install texlive and then run `pdflatex --shell-escape keys.tex`. On Mac, install [MacTex](http://tug.org/mactex/). No idea what to do on Windows.
 
 FAQ
 ===
