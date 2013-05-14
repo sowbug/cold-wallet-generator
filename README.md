@@ -24,6 +24,8 @@ gen_cold_wallet > /tmp/keys.tex`
 
 On Linux, you probably want to install texlive and then run `pdflatex --shell-escape keys.tex`. On Mac, install [MacTex](http://tug.org/mactex/). No idea what to do on Windows.
 
+If you don't want to worry about files sticking around on Linux, avoid writing them in the first place with `mkdir /tmp/ramdisk; chmod 777 /tmp/ramdisk; sudo mount -t tmpfs -o size=256M tmpfs /tmp/ramdisk/` and then do your work in that directory. Then `umount /tmp/ramdisk/` when you're done.
+
 FAQ
 ===
 
