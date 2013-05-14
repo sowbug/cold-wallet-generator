@@ -11,6 +11,8 @@
 # PATH, then try something like this:
 #
 # hexdump -v -e '/1 "%02X"' -n 32 /dev/urandom | keyfmt "%a:%w"
+#
+# https://github.com/sowbug/cold-wallet-generator
 
 import datetime
 import sys
@@ -28,32 +30,45 @@ def print_start():
 \fancyhead{}
 \renewcommand{\headrulewidth}{0pt}
 \fancyfoot{}
-\fancyfoot[RE,LO]{Generated %s. https://github.com/sowbug/cold-wallet-generator}
+\fancyfoot[RE,LO]{Generated %s}
 
 \begin{document}
 
-\begin{enumerate}""" % (datetime.date.today())
+""" % (datetime.date.today())
 
 def print_end():
   print r"""
-\end{enumerate}
-
 \end{document}"""
 
-def print_address(public, private):
+def print_address(public, private, include_private=True):
   print r"""\item
 \begin{pspicture}(1in,1in)
 \psbarcode{%s}{eclevel=M width=0.55 height=0.55}{qrcode}
 \end{pspicture}
-\footnotesize %s
-\hfill \begin{pspicture}(1in,1in)
+\footnotesize %s""" % (public, public)
+  if include_private:
+    print r"""\hfill \begin{pspicture}(1in,1in)
 \psbarcode{%s}{eclevel=H width=0.55 height=0.55}{qrcode}
 \end{pspicture}
-""" % (public, public, private)
+""" % (private)
+
+def print_lines(lines, include_private=True):
+  print "\\begin{enumerate}\n\\setcounter{enumi}{0}"
+  items_on_page = 0
+  for line in lines:
+    (pub, priv) = line.split(":")
+    print_address(pub.strip(), priv.strip(), include_private)
+    items_on_page += 1
+    if items_on_page == 20:
+      items_on_page = 0
+      print "\\pagebreak\n"
+  print "\\end{enumerate}\n"
 
 lines = sys.stdin.readlines()
 print_start()
-for line in lines:
-  (pub, priv) = line.split(":")
-  print_address(pub.strip(), priv.strip())
+
+print_lines(lines, True)
+print "\\clearpage\n"
+print_lines(lines, False)
+
 print_end()
