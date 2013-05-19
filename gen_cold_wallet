@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# https://github.com/sowbug/cold-wallet-generator
+#
 # Generates a TeX file representing a nice-looking, scannable paper wallet
 # suitable for cold storage.
 #
@@ -12,8 +14,12 @@
 #
 # hexdump -v -e '/1 "%02X"' -n 32 /dev/urandom | keyfmt "%a:%w"
 #
-# https://github.com/sowbug/cold-wallet-generator
+# For keyfmt to work, you'll also need to have installed
+# https://github.com/warner/python-ecdsa to get the elliptic-curve stuff
+# needed for key generation. (This project knows nothing specific about
+# Bitcoin, but keyfmt does.)
 
+import argparse
 import datetime
 import sys
 
@@ -23,7 +29,7 @@ def print_start():
 \setlength{\columnseprule}{0.4pt}
 \usepackage{pst-barcode}
 \usepackage{auto-pst-pdf}
-\usepackage[margin=0.75in]{geometry}
+\usepackage[margin=0.5in]{geometry}
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -42,15 +48,18 @@ def print_end():
 
 def print_address(public, private, include_private=True):
   print r"""\item
-\begin{pspicture}(1in,1in)
-\psbarcode{%s}{eclevel=M width=0.55 height=0.55}{qrcode}
-\end{pspicture}
-\footnotesize %s""" % (public, public)
+\begin{pspicture}
+\psbarcode{%s}{eclevel=M width=0.8 height=0.8}{qrcode}
+\end{pspicture} """ % (public)
   if include_private:
-    print r"""\hfill \begin{pspicture}(1in,1in)
-\psbarcode{%s}{eclevel=H width=0.55 height=0.55}{qrcode}
-\end{pspicture}
-""" % (private)
+    print r"""\hfill \begin{pspicture}
+\psbarcode{%s}{eclevel=H width=0.8 height=0.8}{qrcode}
+\end{pspicture}""" % (private)
+  print "\n"
+
+  print public + "\n"
+  if include_private:
+    print private
 
 def print_lines(lines, include_private=True):
   print "\\begin{enumerate}\n\\setcounter{enumi}{0}"
@@ -59,16 +68,30 @@ def print_lines(lines, include_private=True):
     (pub, priv) = line.split(":")
     print_address(pub.strip(), priv.strip(), include_private)
     items_on_page += 1
-    if items_on_page == 20:
+    if items_on_page % 5 != 0:
+      print "\\hrule"
+    if items_on_page == 5:
       items_on_page = 0
       print "\\pagebreak\n"
   print "\\end{enumerate}\n"
 
-lines = sys.stdin.readlines()
-print_start()
+def print_pages(args):
+  if args.filename:
+    f = open(args.filename)
+    lines = f.readlines()
+    f.close()
+  else:
+    lines = sys.stdin.readlines()
+  print_start()
+  print_lines(lines, not args.exclude_private_keys)
+  print_end()
 
-print_lines(lines, True)
-print "\\clearpage\n"
-print_lines(lines, False)
+parser = argparse.ArgumentParser(description='Generates a TeX-format document ' +
+  'that nicely formats a Bitcoin paper wallet for offline storage.')
+parser.add_argument("filename", nargs='?',
+  help="file of Electrum-format Bitcoin addresses to read. Otherwise reads from stdin.")
+parser.add_argument("-x", "--exclude-private-keys", action="store_true",
+  help="excludes private keys from document")
 
-print_end()
+args = parser.parse_args()
+print_pages(args)
