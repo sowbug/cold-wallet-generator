@@ -50,9 +50,9 @@ def print_address(public, private, include_private=True):
   print r"""\item
 \begin{pspicture}
 \psbarcode{%s}{eclevel=M width=0.8 height=0.8}{qrcode}
-\end{pspicture} """ % (public)
+\end{pspicture}""" % (public)
   if include_private:
-    print r"""\hfill \begin{pspicture}
+    print r""" \hfill \begin{pspicture}
 \psbarcode{%s}{eclevel=H width=0.8 height=0.8}{qrcode}
 \end{pspicture}""" % (private)
   print "\n"
