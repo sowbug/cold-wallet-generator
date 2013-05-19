@@ -46,27 +46,27 @@ def print_end():
   print r"""
 \end{document}"""
 
-def print_address(public, private, include_private=True):
+def print_address(public, private, args):
   print r"""\item
 \begin{pspicture}
 \psbarcode{%s}{eclevel=M width=0.8 height=0.8}{qrcode}
 \end{pspicture}""" % (public)
-  if include_private:
+  if not args.exclude_private_keys:
     print r""" \hfill \begin{pspicture}
 \psbarcode{%s}{eclevel=H width=0.8 height=0.8}{qrcode}
 \end{pspicture}""" % (private)
   print "\n"
 
   print public + "\n"
-  if include_private:
+  if not args.exclude_private_keys and not args.exclude_private_key_text:
     print private
 
-def print_lines(lines, include_private=True):
+def print_lines(lines, args):
   print "\\begin{enumerate}\n\\setcounter{enumi}{0}"
   items_on_page = 0
   for line in lines:
     (pub, priv) = line.split(":")
-    print_address(pub.strip(), priv.strip(), include_private)
+    print_address(pub.strip(), priv.strip(), args)
     items_on_page += 1
     if items_on_page % 5 != 0:
       print "\\hrule"
@@ -83,7 +83,7 @@ def print_pages(args):
   else:
     lines = sys.stdin.readlines()
   print_start()
-  print_lines(lines, not args.exclude_private_keys)
+  print_lines(lines, args)
   print_end()
 
 parser = argparse.ArgumentParser(description='Generates a TeX-format document ' +
@@ -92,6 +92,8 @@ parser.add_argument("filename", nargs='?',
   help="file of Electrum-format Bitcoin addresses to read. Otherwise reads from stdin.")
 parser.add_argument("-x", "--exclude-private-keys", action="store_true",
   help="excludes private keys from document")
+parser.add_argument("--exclude-private-key-text", action="store_true",
+  help="excludes text representations of private keys from document")
 
 args = parser.parse_args()
 print_pages(args)
