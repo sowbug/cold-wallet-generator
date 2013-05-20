@@ -48,11 +48,12 @@ def print_end():
 
 def print_address(public, private, args):
   print r"""\item
-\begin{pspicture}
+\begin{pspicture}(1in,1in)
 \psbarcode{%s}{eclevel=M width=0.8 height=0.8}{qrcode}
 \end{pspicture}""" % (public)
   if not args.exclude_private_keys:
-    print r""" \hfill \begin{pspicture}
+    print r"""\hfill
+\begin{pspicture}(1in,1in)
 \psbarcode{%s}{eclevel=H width=0.8 height=0.8}{qrcode}
 \end{pspicture}""" % (private)
   print "\n"
