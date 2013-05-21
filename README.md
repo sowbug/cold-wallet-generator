@@ -30,3 +30,5 @@ FAQ
 ===
 
 * **What's this about secure deletion?** On OSX, you want `srm file_I_never_want_to_see_again`. On Linux, it's `shred -u file_I_never_want_to_see_again`. I don't know how to do it on Windows.
+
+* **This is just what I was looking for! I send you a tiny thank-you?** Sure! 1BUGzQ7CiHF2FUxHVH2LbUx1oNNN9VnuC1
