@@ -31,4 +31,6 @@ FAQ
 
 * **What's this about secure deletion?** On OSX, you want `srm file_I_never_want_to_see_again`. On Linux, it's `shred -u file_I_never_want_to_see_again`. I don't know how to do it on Windows.
 
+* **TeX? Seriously? If I wanted low tech I'd carve my addresses on rocks.** It's the best toolchain I could think of that gave good control over page layout but didn't involve a web browser (which you might not trust not to leave traces behind). There's probably a better command-line page-layout tool that will generate printable content, but I'm not familiar with it.
+
 * **This is just what I was looking for! May I send you a tiny thank-you?** Sure! Here's my address: [1BUGzQ7CiHF2FUxHVH2LbUx1oNNN9VnuC1](https://blockchain.info/address/1BUGzQ7CiHF2FUxHVH2LbUx1oNNN9VnuC1)
