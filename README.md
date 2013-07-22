@@ -32,6 +32,8 @@ gen_cold_wallet > /tmp/keys.tex`
 
 If you don't want to worry about files sticking around on Linux, avoid writing them in the first place with `mkdir /tmp/ramdisk; chmod 777 /tmp/ramdisk; sudo mount -t tmpfs -o size=256M tmpfs /tmp/ramdisk/` and then do your work in that directory. Then `umount /tmp/ramdisk/` when you're done.
 
+The TeX output is designed to be printed on 8.5-inch by 11-inch paper, 10 addresses per page, with the long end of the printed pages folded in half. Then the folded pages fit nicely in a small 5.5-inch x 8.5-inch binder. I couldn't figure out how to render the same thing in HTML, so I recommend a 2-per-page layout when printing, which ends up looking the same.
+
 FAQ
 ===
 
