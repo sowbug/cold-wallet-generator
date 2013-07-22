@@ -21,10 +21,10 @@
 
 import argparse
 import datetime
+from jinja2 import Template
 import sys
 
-def print_start():
-  print r"""\documentclass[landscape, twocolumn]{book}
+TEX_TEMPLATE = r"""\documentclass[landscape, twocolumn]{book}
 \setlength\columnsep{\dimexpr 1in/2\relax}
 \setlength{\columnseprule}{0.4pt}
 \usepackage{pst-barcode}
@@ -36,45 +36,32 @@ def print_start():
 \fancyhead{}
 \renewcommand{\headrulewidth}{0pt}
 \fancyfoot{}
-\fancyfoot[RE,LO]{Generated %s}
+\fancyfoot[RE,LO]{Generated {{ today }}}
 
 \begin{document}
 
-""" % (datetime.date.today())
+\begin{enumerate}
+\setcounter{enumi}{0}
+{% for key in keys %}\item
+\begin{pspicture}(1in,1in)
+\psbarcode{%raw%}{{%endraw%}{{ key.address }}{%raw%}}{%endraw%}{eclevel=M width=0.8 height=0.8}{qrcode}
+\end{pspicture}
+{% if not exclude_private_keys %}\hfill
+\begin{pspicture}(1in,1in)
+\psbarcode{%raw%}{{%endraw%}{{ key.private_key }}{%raw%}}{%endraw%}{eclevel=H width=0.8 height=0.8}{qrcode}
+\end{pspicture}
+{% endif %}
 
-def print_end():
-  print r"""
+{{ key.address }}
+{% if not exclude_private_keys and not exclude_private_key_text %}
+{{ key.private_key }}
+{% endif %}{% if loop.index % 5 != 0 %}\hrule{% else %}\pagebreak
+{% endif %}
+{% endfor %}
+
+\end{enumerate}
+
 \end{document}"""
-
-def print_address(public, private, args):
-  print r"""\item
-\begin{pspicture}(1in,1in)
-\psbarcode{%s}{eclevel=M width=0.8 height=0.8}{qrcode}
-\end{pspicture}""" % (public)
-  if not args.exclude_private_keys:
-    print r"""\hfill
-\begin{pspicture}(1in,1in)
-\psbarcode{%s}{eclevel=H width=0.8 height=0.8}{qrcode}
-\end{pspicture}""" % (private)
-  print "\n"
-
-  print public + "\n"
-  if not args.exclude_private_keys and not args.exclude_private_key_text:
-    print private
-
-def print_lines(lines, args):
-  print "\\begin{enumerate}\n\\setcounter{enumi}{0}"
-  items_on_page = 0
-  for line in lines:
-    (pub, priv) = line.split(":")
-    print_address(pub.strip(), priv.strip(), args)
-    items_on_page += 1
-    if items_on_page % 5 != 0:
-      print "\\hrule"
-    if items_on_page == 5:
-      items_on_page = 0
-      print "\\pagebreak\n"
-  print "\\end{enumerate}\n"
 
 def print_pages(args):
   if args.filename:
@@ -83,9 +70,17 @@ def print_pages(args):
     f.close()
   else:
     lines = sys.stdin.readlines()
-  print_start()
-  print_lines(lines, args)
-  print_end()
+  template = Template(TEX_TEMPLATE)
+  keys = []
+  for line in lines:
+    key = {}
+    address, private_key = line.split(":")
+    (key['address'], key['private_key']) = address.strip(), private_key.strip()
+    keys.append(key)
+  print template.render(keys=keys,
+                        today=datetime.date.today(),
+                        exclude_private_keys=args.exclude_private_keys,
+                        exclude_private_key_text=args.exclude_private_key_text)
 
 parser = argparse.ArgumentParser(description='Generates a TeX-format document ' +
   'that nicely formats a Bitcoin paper wallet for offline storage.')
