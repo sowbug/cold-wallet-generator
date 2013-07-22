@@ -2,8 +2,8 @@
 
 # https://github.com/sowbug/cold-wallet-generator
 #
-# Generates a TeX file representing a nice-looking, scannable paper wallet
-# suitable for cold storage.
+# Generates a TeX or HTML file representing a nice-looking, scannable paper
+# Bitcoin wallet suitable for cold storage.
 #
 # Accepts a series of addresses on stdin, where each line contains an
 # Electrum-format <address:private_key> Bitcoin address.
