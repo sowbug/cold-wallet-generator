@@ -63,6 +63,65 @@ TEX_TEMPLATE = r"""\documentclass[landscape, twocolumn]{book}
 
 \end{document}"""
 
+HTML_TEMPLATE = r"""<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  font-family: ocr-a, calibri, times new roman; font-size:12px;
+}
+.wallet {
+  margin: auto; padding: 16px 8px; border-bottom: 1px dotted;
+  page-break-inside: avoid;
+}
+.private-key {
+  float: right;
+}
+.footer {
+  margin: auto;
+  padding-top: 0.5em;
+}
+</style>
+</head>
+<body>
+{% for key in keys %}
+<div class="wallet">
+  {{ loop.index }}. <img src="data:image/png,{{ key.address_data_url }}" />
+{% if not exclude_private_keys %}
+  <span class="private-key">
+    <img src="data:image/png,{{ key.private_key_data_url }}" />
+  </span>
+{% endif %}
+<br />{{ key.address }}
+{% if not exclude_private_keys and not exclude_private_key_text %}
+<br />{{ key.private_key }}
+{% endif %}
+</div>
+{% endfor %}
+<div class="footer">Generated {{ today }}</div>
+</body>
+</html>"""
+
+def make_data_url(data, important=False):
+  import StringIO
+  import urllib
+  import qrcode
+  box_size=3
+  if important:
+    error_correction=qrcode.constants.ERROR_CORRECT_H
+  else:
+    error_correction=qrcode.constants.ERROR_CORRECT_M
+
+  qr = qrcode.QRCode(version=1,
+                     box_size=box_size,
+                     error_correction=error_correction)
+  qr.add_data(data)
+  qr.make()
+  img = qr.make_image()
+  f = StringIO.StringIO()
+  img.save(f, "PNG")
+  return urllib.quote(f.getvalue())
+
 def print_pages(args):
   if args.filename:
     f = open(args.filename)
@@ -70,12 +129,18 @@ def print_pages(args):
     f.close()
   else:
     lines = sys.stdin.readlines()
-  template = Template(TEX_TEMPLATE)
+  if args.html:
+    template = Template(HTML_TEMPLATE)
+  else:
+    template = Template(TEX_TEMPLATE)
   keys = []
   for line in lines:
     key = {}
     address, private_key = line.split(":")
     (key['address'], key['private_key']) = address.strip(), private_key.strip()
+    if args.html:
+      key['address_data_url'] = make_data_url(address, False)
+      key['private_key_data_url'] = make_data_url(private_key, True)
     keys.append(key)
   print template.render(keys=keys,
                         today=datetime.date.today(),
@@ -90,6 +155,8 @@ parser.add_argument("-x", "--exclude-private-keys", action="store_true",
   help="excludes private keys from document")
 parser.add_argument("--exclude-private-key-text", action="store_true",
   help="excludes text representations of private keys from document")
+parser.add_argument("--html", action="store_true",
+  help="generate HTML instead of TeX")
 
 args = parser.parse_args()
 print_pages(args)
