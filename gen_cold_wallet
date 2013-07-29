@@ -68,7 +68,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 <head>
 <style>
 body {
-  font-family: ocr-a, calibri, times new roman; font-size:12px;
+  font-family: "OCR A Extended", "OCR-A", Calibri, "Times New Roman", serif;
+  font-size:12px;
 }
 .wallet {
   margin: auto; padding: 16px 8px; border-bottom: 1px dotted;
