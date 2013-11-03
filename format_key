@@ -8,7 +8,7 @@
 #
 # This generates a new key for importing to Electrum:
 #
-#     hexdump -v -e '/1 "%02X"' -n 32 /dev/urandom | keyfmt "%a:%w"
+#     hexdump -v -e '/1 "%02X"' -n 32 /dev/urandom | format_key "%a:%w"
 #
 # Adapted from https://github.com/bkkcoins/misc.
 #

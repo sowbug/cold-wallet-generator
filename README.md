@@ -8,6 +8,8 @@ Requirements
 
 Python and [jinja2](http://jinja.pocoo.org/docs/). For TeX: something that can render TeX files. For HTML: the Python libraries [PIL](http://www.pythonware.com/products/pil/) and [qrcode](https://github.com/lincolnloop/python-qrcode), as well as something that can render HTML (either your web browser or a direct-to-PDF tool like [wkhtmltopdf](https://code.google.com/p/wkhtmltopdf/)).
 
+For format_key: sudo pip install base58 pycrypto ecdsa scrypt
+
 Usage
 =====
 
@@ -23,9 +25,9 @@ Usage
 Notes
 ======
 
-While developing this script, I used [keyfmt](https://github.com/bkkcoins/misc/blob/master/keyfmt/keyfmt) and piped its output straight to the wallet generator:
+While developing this script, I used format_key, based on [keyfmt](https://github.com/bkkcoins/misc/blob/master/keyfmt/keyfmt), and piped its output straight to the wallet generator:
 
-`$ { for i in {1..20} ; do hexdump -v -e '/1 "%02X"' -n 32 /dev/urandom | keyfmt "%a:%w" ; done } |
+`$ { for i in {1..20} ; do hexdump -v -e '/1 "%02X"' -n 32 /dev/urandom | format_key "%a:%w" ; done } |
 gen_cold_wallet > /tmp/keys.tex`
 
 (For real cold-storage addresses, if you're paranoid you'll use something other than /dev/urandom for your source of entropy.) On Linux, you probably want to install texlive and then run `pdflatex --shell-escape keys.tex`. On Mac, install [MacTex](http://tug.org/mactex/). No idea what to do on Windows.

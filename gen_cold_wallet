@@ -8,16 +8,9 @@
 # Accepts a series of addresses on stdin, where each line contains an
 # Electrum-format <address:private_key> Bitcoin address.
 #
-# To generate a document with a lot of addresses, first put
-# https://github.com/bkkcoins/misc/blob/master/keyfmt/keyfmt into your
-# PATH, then try something like this:
+# To generate a document with a lot of addresses, try something like this:
 #
-# hexdump -v -e '/1 "%02X"' -n 32 /dev/urandom | keyfmt "%a:%w"
-#
-# For keyfmt to work, you'll also need to have installed
-# https://github.com/warner/python-ecdsa to get the elliptic-curve stuff
-# needed for key generation. (This project knows nothing specific about
-# Bitcoin, but keyfmt does.)
+# hexdump -v -e '/1 "%02X"' -n 32 /dev/urandom | ./format_key "%a:%w"
 
 import argparse
 import datetime
