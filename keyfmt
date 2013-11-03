@@ -3,9 +3,6 @@
 # Read a private key from stdin and output formatted data values.
 # Input one key per line either hex (64 chars) or WIF key (51 base 58 chars).
 #
-# The format argument can contain variables:
-#
-#
 # eg. "Address: %a\nPrivkey: %w" outputs a format like the vanitygen program
 #     "a:%w" outputs a format good for importing to Electrum
 #
@@ -13,7 +10,9 @@
 #
 #     hexdump -v -e '/1 "%02X"' -n 32 /dev/urandom | keyfmt "%a:%w"
 #
-# Adapted from https://github.com/bkkcoins/misc
+# Adapted from https://github.com/bkkcoins/misc.
+#
+# Install dependencies with `sudo pip install base58 pycrypto ecdsa scrypt`.
 
 import argparse
 import base58
