@@ -67,8 +67,9 @@ for line in sys.stdin:
         line = binascii.hexlify(base58.b58decode(line[:51])[1:33])
     else:
         line = line[:64]
-    chksum = binascii.hexlify(hashlib.sha256(hashlib.sha256(binascii.unhexlify('80'+line)).digest()).digest()[:4])
-    privkey = binascii.unhexlify('80'+line+chksum)
+    chksum = binascii.hexlify(hashlib.sha256(hashlib.sha256(
+        binascii.unhexlify('80' + line)).digest()).digest()[:4])
+    privkey = binascii.unhexlify('80' + line + chksum)
 
     if needs_math:
         pubkey = chr(4) + ecdsa.SigningKey.from_secret_exponent(
@@ -115,9 +116,9 @@ for line in sys.stdin:
             # Base58 checksum:
             # 0x01 0x42 + flagbyte + salt + encryptedhalf1 + encryptedhalf2
             privkey = ('\x01\x42\xc0' + addresshash +
-                encryptedhalf1 + encryptedhalf2 +
-                hashlib.sha256(hashlib.sha256(binascii.unhexlify(
-                    '80'+line)).digest()).digest()[:4])
+                       encryptedhalf1 + encryptedhalf2)
+            privkey += hashlib.sha256(
+                hashlib.sha256(privkey).digest()).digest()[:4]
 
     out = args.format_specifiers[0].replace('%h', line).replace(
         '%w', base58.b58encode(privkey))
