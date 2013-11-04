@@ -27,7 +27,7 @@ Notes
 
 While developing this script, I used format_key, based on [keyfmt](https://github.com/bkkcoins/misc/blob/master/keyfmt/keyfmt), and piped its output straight to the wallet generator:
 
-`$ { for i in {1..20} ; do hexdump -v -e '/1 "%02X"' -n 32 /dev/urandom | format_key "%a:%w" ; done } |
+`$ { for i in {1..20} ; do hexdump -v -e '/1 "%02X"' -n 32 /dev/urandom | format_key.py "%a:%w" ; done } |
 gen_cold_wallet > /tmp/keys.tex`
 
 (For real cold-storage addresses, if you're paranoid you'll use something other than /dev/urandom for your source of entropy.) On Linux, you probably want to install texlive and then run `pdflatex --shell-escape keys.tex`. On Mac, install [MacTex](http://tug.org/mactex/). No idea what to do on Windows.

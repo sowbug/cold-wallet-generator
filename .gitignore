@@ -4,3 +4,4 @@
 .DS_Store
 *~
 sample_keys.synctex.gz
+*.pyc
