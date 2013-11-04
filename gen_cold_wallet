@@ -47,7 +47,7 @@ TEX_TEMPLATE = r"""\documentclass[landscape, twocolumn]{book}
 
 {{ key.address }}
 {% if not exclude_private_keys and not exclude_private_key_text %}
-{{ key.private_key }}
+{\small {{ key.private_key }} }
 {% endif %}{% if loop.index % 5 != 0 %}\hrule{% else %}\pagebreak
 {% endif %}
 {% endfor %}
