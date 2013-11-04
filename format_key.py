@@ -100,9 +100,9 @@ class KeyFormatter:
                     # Do AES256Encrypt(bitcoinprivkey[16...31] xor
                     # derivedhalf1[16...31], derivedhalf2), call the 16-byte
                     # result encryptedhalf2
-                    aes = AES.new(derivedhalf2, AES.MODE_ECB)
+                    aes = AES.new(derivedhalf2)
                     encryptedhalf2 = aes.encrypt(binascii.unhexlify(
-                    '%x' % (long(line[32:64], 16) ^ long(
+                    '%0.32x' % (long(line[32:64], 16) ^ long(
                         binascii.hexlify(derivedhalf1[16:32]), 16))))
 
                     # The encrypted private key is the Base58Check-encoded
