@@ -62,15 +62,16 @@ for test in tests:
     if test[0]:
         # Encrypted, hex
         lines = [test[3]]
-        out = kf.format(["%a:%h:%p:%w"], lines, test[0])
-        expected = "%s:%s:%s:%s" % (test[4], test[3], test[5], test[1])
+        out = kf.format(["%a:%h:%p:%w:%W"], lines, test[0])
+        expected = "%s:%s:%s:%s:%s" % (
+            test[4], test[3], test[5], test[1], test[2])
         assert expected == out, "Encrypted/hex: expected %s but got %s" % (
             expected, out) 
 
         # Encrypted, WIF
         lines = [test[2]]
-        out = kf.format(["%a:%h:%p:%w"], lines, test[0])
-        expected = "%s:%s:%s:%s" % (test[4], test[3], test[5], test[1])
+        out = kf.format(["%a:%h:%p:%w:%W"], lines, test[0])
+        expected = "%s:%s:%s:%s:%s" % (
+            test[4], test[3], test[5], test[1], test[2])
         assert expected == out, "Encrypted/hex: expected %s but got %s" % (
-            expected, out) 
-        
+            expected, out)

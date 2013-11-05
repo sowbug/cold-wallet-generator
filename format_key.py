@@ -10,6 +10,9 @@
 #
 #     hexdump -v -e '/1 "%02X"' -n 32 /dev/urandom | format_key.py "%a:%w"
 #
+# Supplying a passphrase with -p causes %w to emit a BIP 0038-encrypted
+# private key. In this case, %W will emit the unencrypted WIF key.
+#
 # Adapted from https://github.com/bkkcoins/misc.
 #
 # Install dependencies with `sudo pip install base58 pycrypto ecdsa scrypt`.
@@ -109,17 +112,22 @@ class KeyFormatter:
                     # concatenation of the following, which totals 39 bytes
                     # without Base58 checksum: 0x01 0x42 + flagbyte + salt +
                     # encryptedhalf1 + encryptedhalf2
-                    privkey = ('\x01\x42\xc0' + addresshash +
-                               encryptedhalf1 + encryptedhalf2)
-                    privkey += hashlib.sha256(
-                        hashlib.sha256(privkey).digest()).digest()[:4]
+                    encrypted_privkey = ('\x01\x42\xc0' + addresshash +
+                                         encryptedhalf1 + encryptedhalf2)
+                    encrypted_privkey += hashlib.sha256(
+                        hashlib.sha256(
+                            encrypted_privkey).digest()).digest()[:4]
 
-            out = format_specifiers[0].replace('%h', line).replace(
-                '%w', base58.b58encode(privkey))
+            out = format_specifiers[0].replace('%h', line)
+            if uses_passphrase:
+                out = out.replace('%w',
+                                  base58.b58encode(encrypted_privkey)).replace(
+                    '%W', base58.b58encode(privkey))
+            else:
+                out = out.replace('%w', base58.b58encode(privkey))
             if needs_math:
-                out = out.replace('%p',
-                                  binascii.hexlify(pubkey).upper()).replace(
-                                      '%a', addr_b58)
+                out = out.replace('%p', binascii.hexlify(pubkey).upper())
+                out = out.replace('%a', addr_b58)
             return out.decode('string-escape')
 
 if __name__ == "__main__":
