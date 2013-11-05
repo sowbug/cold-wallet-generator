@@ -22,7 +22,7 @@ TEX_TEMPLATE = r"""\documentclass[landscape, twocolumn]{book}
 \setlength{\columnseprule}{0.4pt}
 \usepackage{pst-barcode}
 \usepackage{auto-pst-pdf}
-\usepackage[margin=0.5in]{geometry}
+\usepackage[margin=0.6in]{geometry}
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -47,7 +47,7 @@ TEX_TEMPLATE = r"""\documentclass[landscape, twocolumn]{book}
 
 {{ key.address }}
 {% if not exclude_private_keys and not exclude_private_key_text %}
-{\small {{ key.private_key }} }
+{\footnotesize {{ key.private_key }} }
 {% endif %}{% if loop.index % 5 != 0 %}\hrule{% else %}\pagebreak
 {% endif %}
 {% endfor %}
@@ -130,7 +130,8 @@ def print_pages(args):
   keys = []
   for line in lines:
     key = {}
-    address, private_key = line.split(":")
+    values = line.split(":")
+    address, private_key = values[0], values[1]
     (key['address'], key['private_key']) = address.strip(), private_key.strip()
     if args.html:
       key['address_data_url'] = make_data_url(address, False)
