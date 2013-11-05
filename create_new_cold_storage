@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Before running, make sure PASSPHRASE and GPG_KEY_ID are set.
+# It's expected that a key matching the filename $GPG_KEY_ID.gpg is in the
+# current directory.
+#
+# Example:
+#
+# PASSPHRASE=teddybear GPG_KEY_ID=ABCD0123 create_new_cold_storage
+
+PREFIX=cs-btc-`date "+%Y%m%d"`-`date "+%N"`
+
+{ for i in {1..100} ; do hexdump -v -e '/1 "%02X"' -n 32 /dev/urandom \
+| format_key.py -p $PASSPHRASE "%a:%w:%W" ; done } > keys.txt
+
+< keys.txt gen_cold_wallet > keys.tex
+pdflatex --shell-escape keys.tex
+mv keys.pdf print-then-shred-$PREFIX.pdf
+
+< keys.txt gen_cold_wallet -x > keys.tex
+pdflatex --shell-escape keys.tex
+mv keys.pdf $PREFIX-public-only.pdf
+
+gpg --import ${GPG_KEY_ID}.gpg
+gpg -a \
+    -r ${GPG_KEY_ID} \
+    --no-default-recipient --no-encrypt-to \
+    -o $PREFIX.txt.asc \
+    -e keys.txt
+
+shred -u keys*
