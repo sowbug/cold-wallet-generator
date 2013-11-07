@@ -10,12 +10,12 @@
 
 PREFIX=cs-btc-`date "+%Y%m%d"`-`date "+%N"`
 
-{ for i in {1..100} ; do hexdump -v -e '/1 "%02X"' -n 32 /dev/urandom \
-| format_key.py -p $PASSPHRASE "%a:%w:%W" ; done } > keys.txt
+{ for i in {1..20} ; do hexdump -v -e '/1 "%02X"' -n 32 /dev/urandom \
+| format_key.py -p $PASSPHRASE "%a:%w:%W" ; done } | sort -u > keys.txt
 
 < keys.txt gen_cold_wallet > keys.tex
 pdflatex --shell-escape keys.tex
-mv keys.pdf print-then-shred-$PREFIX.pdf
+mv keys.pdf $PREFIX-print-then-shred.pdf
 
 < keys.txt gen_cold_wallet -x > keys.tex
 pdflatex --shell-escape keys.tex
@@ -27,5 +27,7 @@ gpg -a \
     --no-default-recipient --no-encrypt-to \
     -o $PREFIX.txt.asc \
     -e keys.txt
+
+grep -oE "^[0-9a-zA-Z]+" keys.txt > $PREFIX-addresses.txt
 
 shred -u keys*
