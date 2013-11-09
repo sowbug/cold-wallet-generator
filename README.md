@@ -38,7 +38,9 @@ The TeX output is designed to be printed on 8.5-inch by 11-inch paper, 10 addres
 
 The create_new_cold_storage script is the one I use to create a fresh set of BIP 0038-encrypted keys and addresses. Run it as follows:
 
-`PASSPHRASE=secret GPG_KEY_ID=1234ABCD create_new_cold_storage`
+` PASSPHRASE=secret GPG_KEY_ID=1234ABCD create_new_cold_storage`
+
+(Note that there's a space at the start of the command! If your Bash shell is set up with HISTCONTROL=ignorespace, this will keep your passphrase from being written to your Bash history.)
 
 This will create the following:
 
