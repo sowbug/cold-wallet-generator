@@ -1,7 +1,7 @@
 Cold Wallet Generator
 =====================
 
-Given one or more Bitcoin addresses with private keys, generates a TeX or HTML file suitable for printing and putting into cold storage.
+Given one or more Bitcoin addresses with private keys, generates a TeX or HTML file suitable for printing and putting into cold storage. Now with BIP 0038 symmetric encryption.
 
 Requirements
 ============
@@ -35,6 +35,19 @@ gen_cold_wallet > /tmp/keys.tex`
 If you don't want to worry about files sticking around on Linux, avoid writing them in the first place with `mkdir /tmp/ramdisk; chmod 777 /tmp/ramdisk; sudo mount -t tmpfs -o size=256M tmpfs /tmp/ramdisk/` and then do your work in that directory. Then `umount /tmp/ramdisk/` when you're done.
 
 The TeX output is designed to be printed on 8.5-inch by 11-inch paper, 10 addresses per page, with the long end of the printed pages folded in half. Then the folded pages fit nicely in a small 5.5-inch x 8.5-inch binder. I couldn't figure out how to render the same thing in HTML, so I recommend a 2-per-page layout when printing, which ends up looking the same.
+
+The create_new_cold_storage script is the one I use to create a fresh set of BIP 0038-encrypted keys and addresses. Run it as follows:
+
+`PASSPHRASE=secret GPG_KEY_ID=1234ABCD create_new_cold_storage`
+
+This will create the following:
+
+1. A plaintext file containing the addresses.
+2. A PDF of the addresses with scannable QR codes.
+3. A GPG-encrypted file containing keys and addresses, where the GPG key is the one having the ID you specified earlier.
+4. A PDF of BIP 0038-encrypted keys and addresses, using the passphrase you specified earlier.
+
+Run the script on an offline computer, connect the computer by USB to a printer, print the PDF with the private keys, save that paper somewhere safe, then securely delete that PDF. Finally, move the other three files onto normal storage. For the GPG-encrypted file, keep it on well-replicated storage (Google Drive, Dropbox, email to friends, email to enemies, pastebin, anywhere you like).
 
 FAQ
 ===
