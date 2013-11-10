@@ -53,8 +53,9 @@ class KeyFormatter:
             SECP256k1 = ecdsa.curves.Curve("secp256k1", curve_secp256k1,
                                            generator_secp256k1, oid_secp256k1)
 
+        response = []
         for line in lines:
-            line = line.replace(' ', '')
+            line = line.strip()
             if line[0] == '5' and len(line) < 64:
                 line = binascii.hexlify(base58.b58decode(line[:51])[1:33]).upper()
             else:
@@ -118,17 +119,19 @@ class KeyFormatter:
                         hashlib.sha256(
                             encrypted_privkey).digest()).digest()[:4]
 
-            out = format_specifiers[0].replace('%h', line)
-            if uses_passphrase:
-                out = out.replace('%w',
-                                  base58.b58encode(encrypted_privkey)).replace(
-                    '%W', base58.b58encode(privkey))
-            else:
-                out = out.replace('%w', base58.b58encode(privkey))
-            if needs_math:
-                out = out.replace('%p', binascii.hexlify(pubkey).upper())
-                out = out.replace('%a', addr_b58)
-            return out.decode('string-escape')
+                out = format_specifiers[0].replace('%h', line)
+                if uses_passphrase:
+                    out = out.replace(
+                        '%w',
+                        base58.b58encode(encrypted_privkey)).replace(
+                            '%W', base58.b58encode(privkey))
+                else:
+                    out = out.replace('%w', base58.b58encode(privkey))
+                if needs_math:
+                    out = out.replace('%p', binascii.hexlify(pubkey).upper())
+                    out = out.replace('%a', addr_b58)
+            response.append(out.decode('string-escape'))
+        return '\n'.join(response)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
