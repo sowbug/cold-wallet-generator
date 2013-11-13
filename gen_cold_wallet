@@ -132,6 +132,10 @@ def print_pages(args):
     key = {}
     values = line.split(":")
     address, private_key = values[0], values[1]
+    if args.exclude_addresses:
+      address = '[address hidden]'
+    if args.elide_addresses:
+      address = address[0] + "..." + address[-8:]
     (key['address'], key['private_key']) = address.strip(), private_key.strip()
     if args.html:
       key['address_data_url'] = make_data_url(address, False)
@@ -152,6 +156,10 @@ parser.add_argument("--exclude-private-key-text", action="store_true",
   help="excludes text representations of private keys from document")
 parser.add_argument("--html", action="store_true",
   help="generate HTML instead of TeX")
+parser.add_argument("-a", "--exclude-addresses", action="store_true",
+  help="excludes addresses from document")
+parser.add_argument("-e", "--elide-addresses", action="store_true",
+  help="includes only partial addresses")
 
 args = parser.parse_args()
 print_pages(args)
