@@ -10,6 +10,11 @@ Python and [jinja2](http://jinja.pocoo.org/docs/). For TeX: something that can r
 
 For format_key: sudo pip install base58 pycrypto ecdsa scrypt
 
+Before you begin
+===
+
+Have a look at https://github.com/bpdavenport/btc as an alternative. It's substantially easier to use than this set of scripts, and it requires only Python libraries.
+
 Usage
 =====
 
